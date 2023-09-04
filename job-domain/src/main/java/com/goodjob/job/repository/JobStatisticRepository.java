@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JobStatisticRepository extends JpaRepository<JobStatistic, Long> {
+public interface JobStatisticRepository extends JpaRepository<JobStatistic, Long>, JobStatisticQueryDslRepository {
     Page<JobStatistic> findByCareerAndSectorCode(int career, int sectorCode, Pageable pageable);
     Page<JobStatistic> findBySectorCode(int sectorCode, String place,Pageable pageable);
 
