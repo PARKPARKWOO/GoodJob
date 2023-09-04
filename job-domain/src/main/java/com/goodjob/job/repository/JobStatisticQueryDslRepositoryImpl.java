@@ -17,8 +17,6 @@ import static com.goodjob.job.entity.QJobStatistic.jobStatistic;
 
 
 @RequiredArgsConstructor
-@Transactional
-@Repository
 public class JobStatisticQueryDslRepositoryImpl implements JobStatisticQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -35,23 +33,6 @@ public class JobStatisticQueryDslRepositoryImpl implements JobStatisticQueryDslR
                         eqPlace(place)
                 )
                 .orderBy(jobStatistic.id.desc());
-//        JPAQuery<JobStatistic> query;
-//        if (careerCode == -1) {
-//            query = jpaQueryFactory.select(jobStatistic)
-//                    .from(jobStatistic)
-//                    .where(
-//                            jobStatistic.subject.contains(subject), jobStatistic.place.contains(place),
-//                            jobStatistic.sectorCode.eq(sectorNum))
-//                    .orderBy(jobStatistic.id.desc());
-//        } else {
-//            query = jpaQueryFactory.select(jobStatistic)
-//                    .from(jobStatistic)
-//                    .where(
-//                            jobStatistic.subject.contains(subject), jobStatistic.place.contains(place),
-//                            jobStatistic.sectorCode.eq(sectorNum), jobStatistic.career.eq(careerCode))
-//                    .orderBy(jobStatistic.id.desc());
-//        }
-
         List<JobStatistic> content = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -99,7 +80,7 @@ public class JobStatisticQueryDslRepositoryImpl implements JobStatisticQueryDslR
         return sectorNum == -1 ? null : jobStatistic.sectorCode.eq(sectorNum);
     }
     private BooleanExpression eqCareer(int careerCode) {
-        return jobStatistic.career.eq(careerCode);
+        return careerCode == -1 ? null : jobStatistic.career.eq(careerCode);
     }
     private BooleanExpression eqPlace(String place) {
         return place == null ? null : jobStatistic.place.contains(place);

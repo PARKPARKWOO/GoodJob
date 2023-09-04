@@ -4,7 +4,6 @@ package com.goodjob.job.service;
 
 import com.goodjob.job.dto.JobResponseDto;
 import com.goodjob.job.entity.JobStatistic;
-import com.goodjob.job.repository.JobStatisticQueryDslRepositoryImpl;
 import com.goodjob.job.repository.JobStatisticRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import java.util.List;
 public class JobStatisticService {
     private final JobStatisticRepository jobStatisticRepository;
 
-    private final JobStatisticQueryDslRepositoryImpl queryDslRepository;
 
     /**
      * create
@@ -75,7 +73,7 @@ public class JobStatisticService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("startDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        return queryDslRepository.noKeyword(sectorNum, careerCode, place, pageable);
+        return jobStatisticRepository.noKeyword(sectorNum, careerCode, place, pageable);
     }
 
 
@@ -87,7 +85,7 @@ public class JobStatisticService {
         sorts.add(Sort.Order.desc("startDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
-        return queryDslRepository.filterList(sectorNum, careerCode,place, keyword, pageable);
+        return jobStatisticRepository.filterList(sectorNum, careerCode,place, keyword, pageable);
     }
 
     @Transactional
@@ -118,11 +116,11 @@ public class JobStatisticService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String today = now.format(dateTimeFormatter);
         String aMonthAgo = now.minusMonths(1).format(dateTimeFormatter);
-        regularlyDelete(queryDslRepository.findDeadLine(today, aMonthAgo));
+        regularlyDelete(jobStatisticRepository.findDeadLine(today, aMonthAgo));
     }
 
     @Transactional
-    protected void regularlyDelete(List<JobStatistic> deadLine) {
+    public void regularlyDelete(List<JobStatistic> deadLine) {
         jobStatisticRepository.deleteAllInBatch(deadLine);
     }
 }
